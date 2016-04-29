@@ -1,0 +1,45 @@
+Program to recognize strings ‘aaab’, ‘abbb’, ‘ab’, ‘a’ , aabb using the grammer (an bn ,n>=0).
+Posted on April 27, 2012 by Dev
+Lex part :
+
+%{
+#include "y.tab.h"
+%}
+%%
+a return A;
+b return B;
+.|\n return yytext[0];
+%%
+Yacc Part :
+
+%{
+#include<stdio.h>
+int valid=1;
+%}
+%token A B
+%%
+str:S'\n' {return 0;}
+S:A S B
+ |
+ ;
+%%
+main()
+{
+   printf("Enter the string:\n");
+   yyparse();
+   if(valid==1)
+   printf("\nvalid string");
+}
+Sample Input/Output :
+
+$ lex prog5b.l
+$ yacc -d prog5b.y
+$ cc -c lex.yy.c y.tab.c
+$ cc -o a.out lex.yy.o y.tab.o -lfl
+$ ./a.out
+Enter the string: aaaabb
+Invalid string
+$ ./a.out
+Enter the string: aaabbb
+Valid string
+

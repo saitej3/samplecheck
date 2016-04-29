@@ -1,0 +1,243 @@
+Building a calculator
+Using the techniques demonstrated in the previous section, you can build a natural expression calculator.
+Calculator basics
+You can build a program that is capable of processing expressions, as shown in Listing 14.
+Listing 14. Program capable of processing expressions
+4+5
+(4+5)*6
+2^3/6
+sin(1)+cos(PI)
+By defining additional tokens and grammar rules, you can extend that functionality even further to include a range of functions and equations, not only built into the standard C language and math library, but also those that you specifically define.
+To be able to parse all of these different elements, the first stage is to define the tokens that will be identified by the lexical analysis component. You can see the full lex definition in Listing 15.
+Listing 15. Lex file for an advanced calculator
+%{
+#define YYSTYPE double
+#include "calcparse.tab.h"
+#include <math.h>
+extern double yylval;
+%}
+D       [0-9.]
+%%
+[ \t]   { ; }
+log      return LOG;
+pi      return PIVAL;
+sin     return SIN;
+cos     return COS;
+tan     return TAN;
+and     return AND;
+not     return NOT;
+xor     return XOR;
+or      return OR;
+reg     return REGA;
+ans     return ANS;
+fix     return FIX;
+sci     return SCI;
+eng     return ENG;
+const   return CONST;
+bintodec return BINTODEC;
+dectobin return DECTOBIN;
+{D}+    { sscanf( yytext, "%lf", &yylval ); return NUMBER ; }
+[a-zA-Z_]+ return IDENT;
+"["     return OPENREG;
+"]"     return CLOSEREG;
+"<<"    return LEFTSHIFT;
+">>"    return RIGHTSHIFT;
+"++"    return INC;
+"--"    return DEC;
+"+"     return PLUS;
+"-"     return MINUS;
+"~"     return UNARYMINUS;
+"/"     return DIV;
+"*"     return MUL;
+"^"     return POW;
+"!"     return FACT;
+"("     return OPENBRACKET;
+")"     return CLOSEBRACKET;
+"%"     return MOD;
+"^^"     return XOR;
+"!!"     return NOT;
+"="     return ASSIGN;
+"&&"    return LAND;
+"||"    return OR;
+"|"     return IOR;
+"&"     return AND;
+"~~"     return COMPLEMENT;
+"\n"    return EOLN;
+There are a range of tokens here, many of which will be self explanatory. The tokens include basic math operations, a number of functions (sin, cos, and so forth) and logical operators. Also note that you are using a double for the values, using sscanf() to parse the string of numbers and a decimal point into a suitable double value.
+Calculator grammar
+Based on the tokens in the previous section, a number of grammar rules exist that are used to parse these. The full code for the grammar parser is shown in Listing 16. Let's take a closer look at some of the highlights and how the system works.
+Listing 16. The calculator grammar file
+%{
+#include <alloca.h>
+#include <math.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <ctype.h>
+#define YYSTYPE double
+double calcfact();
+double reg[99];
+double ans;
+char format[20];
+%}
+
+%token NUMBER SPACE MOD RIGHTSHIFT LEFTSHIFT SEMICOLON SIN EOLN PIVAL
+%token PLUS MINUS DIV MUL POW OPENBRACKET CLOSEBRACKET UNARYMINUS
+%token COS TAN ASIN ACOS ATAN FACT INC DEC LAND OR COMPLEMENT
+%token NOT XOR ASSIGN IOR AND OPENREG CLOSEREG REGA ANS FIX SCI ENG
+%token CONST
+%left PLUS MINUS
+%left MUL DIV
+%left UNARYMINUS
+%left LAND OR XOR NOT AND IOR
+%left LOG
+%%
+list:   /* nothing */
+        | list EOLN
+        | list expr EOLN
+          { printf( format , (double) $2 ); ans=$2; }
+        ;
+expr:   conditional_expr
+        ;
+conditional_expr: logical_or_expr
+        ;
+logical_or_expr: logical_and_expr
+        | logical_or_expr OR logical_and_expr
+          { $$ = (int) $1 || (int) $3; }
+        ;
+logical_and_expr: inclusive_or_expr
+        | logical_and_expr LAND inclusive_or_expr
+          { $$ = (int) $1 && (int) $3; }
+        ;
+inclusive_or_expr: exclusive_or_expr
+        | inclusive_or_expr IOR exclusive_or_expr
+          { $$ = (int) $1 | (int) $3; }
+        ;
+exclusive_or_expr: and_expr
+        | exclusive_or_expr XOR and_expr
+          { $$ = (int) $1 ^ (int) $3; }
+        ;
+and_expr: shift_expr
+        | and_expr AND shift_expr
+          { $$ = (int) $1 & (int) $3; }
+        ;
+shift_expr: pow_expr
+        | shift_expr LEFTSHIFT pow_expr
+          { $$ = (int) $1 << (int) $3; }
+        | shift_expr RIGHTSHIFT pow_expr
+          { $$ = (int) $1 >>(int) $3; }
+        ;
+pow_expr: add_expr
+        | pow_expr POW add_expr { $$ = pow($1,$3); }
+        ;
+add_expr: mul_expr
+        | add_expr PLUS mul_expr  { $$ = $1 + $3; }
+        | add_expr MINUS mul_expr { $$ = $1 - $3; }
+        ;
+mul_expr: unary_expr
+        | mul_expr MUL unary_expr { $$ = $1 * $3; }
+        | mul_expr DIV unary_expr { $$ = $1 / $3; }
+        | mul_expr MOD unary_expr { $$ = fmod($1,$3); }
+        ;
+unary_expr: assign_expr
+        | MINUS primary %prec UNARYMINUS { $$ = -$2; }
+        | INC unary_expr { $$ = $2+1; }
+        | DEC unary_expr { $$ = $2-1; }
+        | NOT unary_expr { $$ = !$2; }
+        | LOG unary_expr { $$ = log($2); }
+        ;
+assign_expr: postfix_expr
+        | REGA OPENREG expr CLOSEREG ASSIGN postfix_expr
+          { reg[(int)$3]=$6; $$=$6; }
+        | REGA OPENREG expr CLOSEREG
+          { $$=reg[(int)$3]; }
+        | REGA
+          { int i;
+            for(i=0;i<100;i++)
+              if (reg[i]!=0)
+                printf("%02d = %.2f\n",i,reg[i]);
+            $$=0;
+          }
+        ;
+postfix_expr: primary
+        | postfix_expr INC { $$ = $1+1; }
+        | postfix_expr DEC { $$ = $1-1; }
+        | postfix_expr FACT
+          { $$ = calcfact((unsigned long int)$1); }
+        ;
+ primary: NUMBER { $$ = $1; }
+        | PIVAL { $$ = M_PI; }
+        | OPENBRACKET expr CLOSEBRACKET { $$ = $2; }
+        | ANS { $$ = ans; }
+        | CONST OPENBRACKET expr CLOSEBRACKET { $$ = constval($3); }
+        | set_format
+        ;
+set_format: function_call
+        | FIX OPENBRACKET expr CLOSEBRACKET
+              { sprintf(format,"%%.%df\n",(int)$3); $$=0; }
+        | FIX { sprintf(format,"%%f\n"); $$=0; }
+        | SCI OPENBRACKET expr CLOSEBRACKET
+              { sprintf(format,"%%.%dg\n",(int)$3); $$=0; }
+        | SCI { sprintf(format,"%%g\n"); $$=0; }
+        | ENG OPENBRACKET expr CLOSEBRACKET
+              { sprintf(format,"%%.%de\n",(int)$3); $$=0; }
+        | ENG { sprintf(format,"%%e\n"); $$=0; }
+        ;
+function_call: SIN OPENBRACKET expr CLOSEBRACKET
+               { $$ = (cos($3)*tan($3)); }
+        | COS OPENBRACKET expr CLOSEBRACKET
+               { $$ = cos($3); }
+        | TAN OPENBRACKET expr CLOSEBRACKET
+               { $$ = tan($3); }
+        | ASIN OPENBRACKET expr CLOSEBRACKET
+               { $$ = asin($3); }
+        | ACOS OPENBRACKET expr CLOSEBRACKET
+               { $$ = acos($3); }
+        | ATAN OPENBRACKET expr CLOSEBRACKET
+               { $$ = atan($3); }
+        ;
+%%
+
+#include <stdio.h>
+#include <ctype.h>
+char *progname;
+double yylval;
+
+main( argc, argv )
+char *argv[];
+{
+  progname = argv[0];
+  strcpy(format,"%g\n");
+  yyparse();
+}
+
+yyerror( s )
+char *s;
+{
+  warning( s , ( char * )0 );
+  yyparse();
+}
+
+warning( s , t )
+char *s , *t;
+{
+  fprintf( stderr ,"%s: %s\n" , progname , s );
+  if ( t )
+    fprintf( stderr , " %s\n" , t );
+}
+There are three global structures available for the rest of the application:
+The reg array is used as a general memory register, where you can place values and results from calculations.
+The ans variable contains the value of the last calculation.
+The format is used to hold the output format to be used when printing results.
+The results of a calculation are only printed out when the input contains an end-of-line character (identified by the EOLN token). This enables a long calculation to be entered on a single line, and for the contents to be parsed and processed before the value is printed out. That operation uses the format specified by the global format variable, and the result is also stored in ans.
+The bulk of the parser is a combination of identifying a fragment and calculating the result, until individual components of a larger calculation are finally resolved to the final value.
+Setting the output format
+The format, which is just a suitable format string for printf(), is updated by using a function-style call to set the precision and format of the output. For example, to set fixed decimal point output to limit the numbers to the right of the decimal point, you can use fix(3), or you can reset to the default format: fix().
+You can see the effect in the sequence in Listing 17.
+Listing 17. Output format
+$ calc
+1/3
+0.333333
+fix(3)
+0.000
+1/3
+0.333

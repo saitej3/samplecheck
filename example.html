@@ -1,0 +1,1190 @@
+<HTML>
+<HEAD>
+  <TITLE>Example lex &amp; Yacc</TITLE>
+</HEAD>
+<body BGCOLOR="dddddd"><!--'"</title></head>-->
+<script type="text/javascript">
+//OwnerIQ
+var __oiq_pct = 50;
+if( __oiq_pct>=100 || Math.floor(Math.random()*100/(100-__oiq_pct)) > 0 ) {
+var _oiqq = _oiqq || [];
+_oiqq.push(['oiq_addPageBrand','Lycos']);
+_oiqq.push(['oiq_addPageCat','Internet > Websites']);
+_oiqq.push(['oiq_addPageLifecycle','Intend']);
+_oiqq.push(['oiq_doTag']);
+(function() {
+var oiq = document.createElement('script'); oiq.type = 'text/javascript'; oiq.async = true;
+oiq.src = document.location.protocol + '//px.owneriq.net/stas/s/lycosn.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(oiq, s);
+})();
+}
+//Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount','UA-21402695-19']);
+_gaq.push(['_setDomainName','tripod.com']);
+_gaq.push(['_setCustomVar',1,'member_name','ashimg',3]);
+_gaq.push(['_trackPageview']);
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+//Lycos Init
+function getReferrer() {
+var all= this.document.cookie;
+if (all== '') return false;
+var cookie_name = 'REFERRER=';
+var start = all.lastIndexOf(cookie_name);
+if (start == -1) return false;
+start += cookie_name.length;
+var end = all.indexOf(';', start);
+if (end == -1) end = all.length;
+return all.substring(start, end);
+}
+function getQuery() {
+var rfr = getReferrer();
+if (rfr == '') return false;
+var q = extractQuery(rfr, 'yahoo.com', 'p=');
+if (q) return q;
+q = extractQuery(rfr, '', 'q=');
+return q ? q : "";
+}
+function extractQuery(full, site, q_param) {
+var start = full.lastIndexOf(site);
+if (start == -1) return false;
+start = full.lastIndexOf(q_param);
+if (start == -1) return false;
+start += q_param.length;
+var end = full.indexOf('&', start);
+if (end == -1) end = full.length;
+return unescape(full.substring(start, end)).split(" ").join("+");
+}
+function generateHref(atag, template){
+atag.href=template.replace('_MYURL_', window.location.href.replace('http://', '')).replace('_MYTITLE_','Check%20out%20this%20Tripod%20Member%20site!'); 
+}
+var lycos_ad = Array();
+var lycos_onload_timer;
+var cm_role = "live";
+var cm_host = "tripod.lycos.com";
+var cm_taxid = "/memberembedded";
+var tripod_member_name = "ashimg";
+var tripod_member_page = "ashimg/example.html";
+var tripod_ratings_hash = "1461911867:421d041eefb766fd1643b89744f33308";
+
+var lycos_ad_category = null;
+
+var lycos_ad_remote_addr = "14.139.85.206";
+var lycos_ad_www_server = "www.tripod.lycos.com";
+var lycos_ad_track_small = "http://members.tripod.com/adm/img/common/ot_smallframe.gif?rand=386670";
+var lycos_ad_track_served = "http://members.tripod.com/adm/img/common/ot_adserved.gif?rand=386670";
+var lycos_search_query = getQuery();
+</script>
+
+<script type="text/javascript" src="http://scripts.lycos.com/catman/init.js"></script>
+
+<script type='text/javascript'>
+ var googletag = googletag || {};
+ googletag.cmd = googletag.cmd || [];
+ (function() {
+   var gads = document.createElement('script');
+   gads.async = true;
+   gads.type = 'text/javascript';
+   var useSSL = 'https:' == document.location.protocol;
+   gads.src = (useSSL ? 'https:' : 'http:') +
+     '//www.googletagservices.com/tag/js/gpt.js';
+   var node = document.getElementsByTagName('script')[0];
+   node.parentNode.insertBefore(gads, node);
+ })();
+</script>
+
+<script type='text/javascript'>
+ googletag.cmd.push(function() {
+   googletag.defineSlot('/95963596/TRI_300X250_dfp', [300, 250], 'div-gpt-ad-1450204159126-0').addService(googletag.pubads());
+   googletag.defineSlot('/95963596/TRI_above_728x90_dfp', [728, 90], 'div-gpt-ad-1450204159126-1').addService(googletag.pubads());
+   googletag.defineSlot('/95963596/TRI_below_728x90_dfp', [728, 90], 'div-gpt-ad-1450204159126-2').addService(googletag.pubads());
+   googletag.pubads().enableSingleRequest();
+   googletag.enableServices();
+ });
+</script>
+
+
+<script type="text/javascript"> 
+(function(isV)
+{
+    if( !isV )
+    {
+        return;
+    }
+    var adMgr = new AdManager();
+    var lycos_prod_set = adMgr.chooseProductSet();
+    var slots = ["leaderboard", "leaderboard2", "toolbar_image", "toolbar_text", "smallbox", "top_promo", "footer2", "slider"];
+    var adCat = this.lycos_ad_category;
+    adMgr.setForcedParam('page', (adCat && adCat.dmoz) ? adCat.dmoz : 'member');
+    if (this.lycos_search_query)
+    {
+        adMgr.setForcedParam("keyword", this.lycos_search_query);
+    } 
+    else if(adCat && adCat.find_what)
+    {
+        adMgr.setForcedParam('keyword', adCat.find_what);
+    }
+    
+    for (var s in slots)
+    {
+        var slot = slots[s];
+        if (adMgr.isSlotAvailable(slot))
+        {
+            this.lycos_ad[slot] = adMgr.getSlot(slot);
+        }
+    }
+
+    adMgr.renderHeader();
+    adMgr.renderFooter();
+}((function() {
+
+var w = 0, h = 0, minimumThreshold = 300;
+
+if (top == self)
+{
+    return true;
+}
+if (typeof(window.innerWidth) == 'number' )
+{
+    w = window.innerWidth;
+    h = window.innerHeight;
+}
+else if (document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight))
+{
+    w = document.documentElement.clientWidth;
+    h = document.documentElement.clientHeight;
+}
+else if (document.body && (document.body.clientWidth || document.body.clientHeight))
+{
+    w = document.body.clientWidth;
+    h = document.body.clientHeight;
+}
+return ((w > minimumThreshold) && (h > minimumThreshold));
+}())));
+
+
+
+
+window.onload = function()
+{
+    var f = document.getElementById("FooterAd");
+    var b = document.getElementsByTagName("body")[0];
+    b.appendChild(f);
+    f.style.display = "block";
+    document.getElementById('lycosFooterAdiFrame').src = '/adm/ad/footerAd.iframe.html';
+    
+
+
+    
+    // DOM Inj Ad
+    (function(isTrellix)
+    {
+        var e = document.createElement('iframe');
+        e.style.border = '0';
+        e.style.margin = 0;
+        e.style.display = 'block';
+        e.style.cssFloat = 'right';
+        e.style.height = '254px';
+        e.style.overflow = 'hidden';
+        e.style.padding = 0;
+        e.style.width = '300px';
+
+
+        var isBlokedByDomain = function( href )
+        {
+            var blockedDomains = [
+                "ananyaporn13000.tripod.com",
+                "xxxpornxxx.tripod.com"
+            ];
+            var flag = false;
+            
+            for( var i=0; i<blockedDomains.length; i++ )
+            {
+                if( href.search( blockedDomains[ i ] ) >= 0 )
+                {
+                    flag = true;
+                }
+            }
+            return flag;
+        }
+
+        var getMetaContent = function( metaName )
+        {
+            var metas = document.getElementsByTagName('meta');
+            for (i=0; i<metas.length; i++)
+            { 
+                if( metas[i].getAttribute("name") == metaName )
+                { 
+                    return metas[i].getAttribute("content"); 
+                } 
+            }
+            return false;
+        }
+        
+        var getCommentNodes = function(regexPattern)
+        {
+            var nodes = {};
+            var nodesA = [];
+            var preferredNodesList = ['a', 'c', 'b'];
+        
+            (function getNodesThatHaveComments(n, pattern)
+            {
+                if (n.hasChildNodes())
+                {
+                    if (n.tagName === 'IFRAME')
+                    {
+                        return false;
+                    }
+                    for (var i = 0; i < n.childNodes.length; i++)
+                    {
+                        if ((n.childNodes[i].nodeType === 8) && (pattern.test(n.childNodes[i].nodeValue)))
+                        {
+                            var areaName = pattern.exec(n.childNodes[i].nodeValue)[1];
+                            nodes[areaName] = n;
+                        }
+                        else if (n.childNodes[i].nodeType === 1)
+                        {
+                            getNodesThatHaveComments(n.childNodes[i], pattern);
+                        }
+                    }
+                }
+            }(document.body, regexPattern));
+
+            for (var i in preferredNodesList)
+            {
+                if (nodes[preferredNodesList[i]])
+                {
+                    if( isTrellix && nodes[preferredNodesList[i]].parentNode.parentNode.parentNode.parentNode )
+                    {
+                        nodesA.push(nodes[preferredNodesList[i]].parentNode.parentNode.parentNode.parentNode);
+                    }
+                    else
+                    {
+                        nodesA.push( nodes[preferredNodesList[i]] );
+                    }
+                }
+            }
+            return nodesA;
+        }
+        
+        
+        var properNode = null;
+        var areaNodes = getCommentNodes( new RegExp( '^area Type="area_(\\w+)"' ) );
+
+        for (var i = 0; i < areaNodes.length; i++)
+        {
+            var a = parseInt(getComputedStyle(areaNodes[i]).width);
+            if ((a >= 300) && (a <= 400))
+            {
+                properNode = areaNodes[i];
+                break;
+            }
+        }
+
+
+        var propertyName = getMetaContent("property") || false;
+        if( isTrellix && (properNode) )
+        {
+            e.src = '/adm/ad/injectAd.iframe.html';
+            properNode.insertBefore(e, properNode.firstChild);
+        }
+        else if( isTrellix && !( properNode ) ) // Slap the ad eventhought there is no alocated slot
+        {
+            e.src = '/adm/ad/injectAd.iframe.html';
+            e.style.cssFloat = 'none';
+            var cdiv = document.createElement('div');
+            cdiv.style = "width:300px;margin:10px auto;";
+            cdiv.appendChild( e );
+            b.insertBefore(cdiv, b.lastChild);
+        }
+        else if( !isBlokedByDomain( location.href ) )
+        {
+            var injF = document.createElement('iframe');
+            injF.style.border = '0';
+            injF.style.margin = 0;
+            injF.style.display = 'block';
+            injF.style.cssFloat = 'none';
+            injF.style.height = '254px';
+            injF.style.overflow = 'hidden';
+            injF.style.padding = 0;
+            injF.style.width = '300px';
+            injF.src = '/adm/ad/injectAd.iframe.html';
+
+            if( b && ( !isTrellix || ( typeof isTrellix == "undefined" ) ) ) // All other tripod props
+            {
+                var cdiv = document.createElement('div');
+                cdiv.style = "width:300px;margin:10px auto;";
+                cdiv.appendChild( injF );
+                b.insertBefore(cdiv, b.lastChild);
+            } 
+        }
+  }( document.isTrellix ));
+}
+
+</script>
+
+<div id="tb_container" style="background:#DFDCCF; border-bottom:1px solid #393939; position:relative; z-index:999999999!important">
+<!--form name="search" onSubmit="return searchit()" id='header_search' >
+<input type="text" placeholder="Search" size=30 name="search2" value="">
+<input type="button" value="Go!" onClick="searchit()">
+</form>
+<style>
+form#header_search {
+    width: 916px;
+    margin: 0 auto 8px;
+    position: relative;
+}
+
+
+form#header_search input {
+    height: 40px;
+    font-size: 14px;
+    line-height: 40px;
+    padding: 0 8px;
+    box-sizing: border-box;
+    background: #F4F2E9;
+    border: 1px solid #BBB8B8;
+    transition: background-color 300ms ease-out,
+                color 300ms ease;
+}
+
+form#header_search input[type="text"] {
+    width: 100%;
+}
+form#header_search input[type="text"]:focus {
+    border-color: #A2D054;
+    background-color: #fff;
+    box-shadow: 0 0px 12px -4px #A2D054;
+}
+
+
+
+form#header_search input[type="button"] {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    opacity: 1;
+    background: #DFDCCF;
+    color: #463734;
+    width: 125px;
+    cursor: pointer;
+    height: 38px;
+    border: none;
+}
+form#header_search input[type="text"]:focus ~ input[type='button']:hover,
+form#header_search input[type='button']:hover {
+    background-color: #A5CE56;
+    color: #fff;
+}
+form#header_search input[type="text"]:focus ~ input[type='button'] {
+    background-color: #52AEDF;
+    color: #fff;
+}
+
+</style>
+
+<script>
+function searchit(){
+    
+    // determine environment 
+    var search_env 
+    if (lycos_ad_www_server.indexOf(".pd.") > -1) {
+       search_env = 'http://search51.pd.lycos.com/a/';
+    } else if (lycos_ad_www_server.indexOf(".qa.") > -1) {
+       search_env = 'http://search51.qa.lycos.com/a/';
+    } else {
+       search_env = 'http://search51.lycos.com/a/';
+    }
+
+var search_term = encodeURIComponent(document.search.search2.value)
+var search_url = search_env+search_term;
+window.open(search_url);
+
+return false
+}
+</script-->
+<style>
+    .adCenterClass{margin:0 auto}
+</style>
+<div id="tb_ad" class="adCenterClass" style="display:block!important; overflow:hidden; width:916px;">
+<a href="http://adtrack.ministerial5.com/clicknew/?a=637394" title="build your own website at Tripod.com" style="float:left; width:186px; border:0">
+<img src="http://ly.lygo.com/ly/tpSite/images/freeAd2.jpg" alt="Make your own free website on Tripod.com" style="border:0; display:block" />
+</a> 
+
+<div id="ad_container" style="display:block!important; float:left; width:728px ">
+<script type="text/javascript">document.write(lycos_ad['leaderboard']);</script>
+</div>
+</div>
+</div>
+<script type="text/javascript">document.write(lycos_ad['slider']);</script> <!-- added 7/22 -->
+<div id="FooterAd" style="background:#DFDCCF; border-top:1px solid #393939; clear:both; display:none; width:100%!important; position:relative; z-index:999999!important; height:90px!important"> 
+<div class="adCenterClass" style="display:block!important; overflow:hidden; width:916px;">
+<a href="http://adtrack.ministerial5.com/clicknew/?a=637394" title="build your own website at Tripod.com" style="float:left; display:block; width:186px; border:0">
+<img src="http://ly.lygo.com/ly/tpSite/images/freeAd2.jpg" alt="Make your own free website on Tripod.com" style="border:0; display:block; " />
+</a> 
+<div id="footerAd_container" style="display:block!important; float:left; width:728px">
+<iframe id="lycosFooterAdiFrame" style="border:0; display:block; float:left; height:96px; overflow:hidden; padding:0; width:750px"></iframe>
+</div>
+</div>
+</div>
+
+
+<P>
+<A HREF="Parser.html"><IMG BORDER="0" SRC="left.gif" ALIGN=top></A>
+<A HREF="index.html"><IMG BORDER="0" SRC="home2.gif" ALIGN=top></A>
+<H1 ALIGN=Center>
+  <FONT COLOR="Navy">Example of Lex &amp; Yacc</FONT>
+</H1>
+<P>
+<BIG>This is a &nbsp;simple example that demonstrate writting of a parser.
+In this example an input file describing a CRC card description in text 
+format is taken as input and corresponding pseudo C++ code is generated.
+The input file is in a format:<BR>
+&nbsp; &nbsp; &nbsp;<FONT COLOR="Maroon">CRC</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp;
+<FONT COLOR="Maroon">CLASS </FONT>&lt;<FONT COLOR="Navy">class
+name</FONT>&gt;<BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">RESPONSIBILITY</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+&nbsp;&lt;<FONT COLOR="Navy">method name </FONT>&gt;
+&nbsp;<FONT COLOR="Maroon">INT</FONT>
+&lt;<FONT COLOR="Navy">attribute</FONT>&gt; <BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; <FONT COLOR="Maroon">CHAR
+</FONT>&lt;<FONT COLOR="Navy">attribute</FONT>&gt;<BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+ &nbsp; &nbsp; &nbsp; &nbsp;
+<FONT COLOR="Maroon">INT*
+</FONT>&lt;<FONT COLOR="Navy">attribute</FONT>&gt;<BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+ &nbsp; &nbsp; &nbsp; &nbsp;
+<FONT COLOR="Maroon">CHAR*</FONT>
+&lt;<FONT COLOR="Navy">attribute</FONT>&gt;<BR>
+ &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+<FONT COLOR="Maroon">END</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">COLABRATION </FONT>&nbsp;<BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;&lt;<FONT COLOR="Maroon">RELATION</FONT>&gt;
+&nbsp;<FONT COLOR="Maroon">CLASS </FONT>&nbsp;
+&nbsp;&lt;<FONT COLOR="Navy">class</FONT><FONT COLOR="Blue">
+</FONT><FONT COLOR="Navy">name</FONT>&gt;<BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+<FONT COLOR="Maroon">END</FONT><BR>
+&nbsp; &nbsp; &nbsp; <FONT COLOR="Maroon">END</FONT><BR>
+<BR>
+e.g<BR>
+&nbsp; &nbsp; &nbsp; &nbsp;<FONT COLOR="Maroon">CRC</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">CLASS
+&nbsp;</FONT><FONT COLOR="Navy">myclass</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">RESPONSIBILITY</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Navy">assign</FONT><FONT COLOR="Blue">
+&nbsp;</FONT><FONT COLOR="Maroon">INT</FONT>
+<FONT COLOR="Navy">number</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">END</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">RESPONSIBILITY</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Navy">assign</FONT><FONT COLOR="Blue">
+</FONT><FONT COLOR="Maroon">CHAR*</FONT>
+<FONT COLOR="Navy">name</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">END</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">COLABRATION</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; <FONT COLOR="Maroon">USING &nbsp;CLASS</FONT>
+<FONT COLOR="Navy">yourclass</FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">END<BR>
+&nbsp; &nbsp; &nbsp;&nbsp; END</bIG></FONT><BR>
+<BR>
+<BIG>The output of this translator is as follows:<BR>
+&nbsp; &nbsp; &nbsp; <FONT COLOR="Purple">// &nbsp;Class Name: myclass<BR>
+&nbsp; &nbsp; &nbsp; // &nbsp;Function:<BR>
+&nbsp; &nbsp; &nbsp; // &nbsp; &nbsp; &nbsp; &nbsp;assign int number<BR>
+&nbsp; &nbsp; &nbsp; // &nbsp; Function:<BR>
+&nbsp; &nbsp; &nbsp; // &nbsp; &nbsp; &nbsp; &nbsp;assign char *name<BR>
+&nbsp; &nbsp; &nbsp; // &nbsp; &nbsp;Class Relations :<BR>
+&nbsp; &nbsp; &nbsp; // &nbsp; &nbsp;This Class USES class yourclass<BR>
+&nbsp; &nbsp; &nbsp; // &nbsp; &nbsp;</FONT><BR>
+&nbsp; &nbsp; &nbsp;<FONT COLOR="Maroon">Class
+</FONT><FONT COLOR="Navy">myclass
+</FONT>&nbsp;<FONT COLOR="Teal">{</FONT><BR>
+&nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">public </FONT>:<BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+&nbsp;<FONT COLOR="Navy">assign</FONT>(<FONT COLOR="Maroon">int
+</FONT><FONT COLOR="Navy">number</FONT>);<BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<FONT COLOR="Navy">assign</FONT>(<FONT COLOR="Maroon">char
+</FONT>*<FONT COLOR="Navy">name</FONT>);<BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">protected</FONT>:<BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;<FONT COLOR="Maroon">private</FONT>:<BR>
+&nbsp; &nbsp; &nbsp;
+&nbsp;</bIG><FONT COLOR="Teal"><BIG>};</bIG></FONT>
+<P>
+  <HR>
+<H2 ALIGN=Center>
+  <FONT COLOR="Navy">Writting the Lex</FONT>
+</H2>
+<PRE><FONT COLOR="Green"><BIG>Step 1.</bIG></FONT><BIG> <FONT COLOR="Maroon">Identify all the Tokens.</FONT><BR>        All the Keywords in the grammar forms the legal tokens.If one<BR>        has the BNF then all the Terminals are the tokens generated by<BR>        the Lex.<FONT COLOR="Green"><BR>Step 2.</FONT> <FONT COLOR="Maroon">Write all the regular expressions</FONT> describing the Tokens.<FONT COLOR="Green"><BR>Step 3.</FONT> <FONT COLOR="Maroon">Identify all lex substitutions </FONT>(if possible) from the set of <BR>        regular expressions.<FONT COLOR="Green"><BR>Step 4.</FONT> To avoid reduce/reduce errors <FONT COLOR="Maroon">identify possible start states</FONT><BR>        and break conflicting tokens into multiple tokens.<BR></bIG>
+<BIG>According to the example,one can trace these steps<FONT COLOR="Green"><BR>Step 1.</FONT> <FONT COLOR="Maroon">Tokens are:</FONT><BR>             CLASS, CRC, END, RESPONSIBILITY, COLABRATION, INT, CHAR<BR>             *, USING, HAS_A, KIND_OF, variables,strings and spaces.<FONT COLOR="Green"><BR>Step 2. </FONT><FONT COLOR="Maroon">R.E f</FONT>or keywords will be the same. R.E for strings and variable<BR>        is [a-zA-Z][a-zA-Z0-9]*<FONT COLOR="Green"><BR>Step 3.</FONT> There are <FONT COLOR="Maroon">no possible lex substitutions.</FONT><FONT COLOR="Green"><BR>Step 4.</FONT> Since strings and variables represents the same R.E ,break them<BR>        into multiple tokens and identify the start state.<BR><BR>The Start states are represented by<BR>  <FONT COLOR="Maroon">%s</FONT> <FONT COLOR="Navy">CL VAR METHOD</FONT><BR><BR>The White spaces and tabs are represented by<BR>   <FONT COLOR="Maroon">[ \t\n]*</FONT>  <FONT COLOR="Teal">{</FONT> <FONT COLOR="Purple">/* note there is no action taken */</FONT><FONT COLOR="Teal"> }</FONT><BR>  <FONT COLOR="Red">Note:</FONT>No action is taken here since whitespaces must be ignored,they are <BR>  not the part of BNF. If any token is returned from this and not <BR>  accounted in BNF then it will give yylook error during parsing.<BR><BR>When the keyword </bIG><FONT COLOR="Maroon"><BIG>CLASS <FONT COLOR="Black">is identified ,the control is given to the State</FONT><BR>CL<FONT COLOR="Black"> and then the string representing the &lt;</FONT></bIG></FONT><FONT COLOR="Navy"><BIG>class name</bIG></FONT><FONT COLOR="Maroon"><BIG><FONT COLOR="Black">&gt; is identified as<BR>token </FONT>CLASSNAME. <FONT COLOR="Black">To start a state,lex has the Keyword </FONT>BEGIN<FONT COLOR="Black"> &lt;</FONT></bIG></FONT><FONT COLOR="Navy"><BIG>state</bIG></FONT><FONT COLOR="Maroon"><BIG><FONT COLOR="Black">&gt; and<BR>to return to the initial state, it is </FONT>BEGIN INITIAL.<FONT COLOR="Black"> The R.E to be matched<BR>on a perticular state is specified as &lt;</FONT></bIG></FONT><FONT COLOR="Navy"><BIG>state</bIG></FONT><FONT COLOR="Maroon"><BIG><FONT COLOR="Black">&gt; </FONT>R.E<FONT COLOR="Black"> </FONT></bIG></FONT><FONT COLOR="Green"><BIG>{ </bIG></FONT><FONT COLOR="Purple"><BIG>action</bIG></FONT><FONT COLOR="Maroon"><BIG><FONT COLOR="Black"> </FONT></bIG></FONT><FONT COLOR="Green"><BIG>}</bIG></FONT><FONT COLOR="Maroon"><BIG><FONT COLOR="Black">. Thus it will <BR>be </FONT></bIG></FONT><FONT COLOR="Red"><BIG>&lt;CL&gt;</bIG></FONT><FONT COLOR="Navy"><BIG>[a-zA-Z][a-zA-Z0-9]*</bIG></FONT><FONT COLOR="Maroon"><BIG><FONT COLOR="Black"> </FONT></bIG></FONT><FONT COLOR="Green"><BIG>{</bIG></FONT><FONT COLOR="Maroon"><BIG><FONT COLOR="Black"> </FONT></bIG></FONT><FONT COLOR="Purple"><BIG>/* action */</bIG></FONT><FONT COLOR="Green"><BIG>}</bIG></FONT><FONT COLOR="Maroon"><BIG><FONT COLOR="Black">.</FONT></bIG></FONT><FONT COLOR="Red"><BIG><BR>Note:</bIG></FONT><FONT COLOR="Maroon"><BIG><FONT COLOR="Black"> The R.E's in a particular state are at the higher priority as<BR>compared to that in initial state. This means that if the token doesn't<BR>match any R.E in that state ,it will then try to match it in the initial <BR>state.<BR><BR>If one is planning to use yystack , then all the values from yytext must<BR>be copied to the stack. These can then be used by yacc with the help <BR>of pseudo variables. Thus to copy the class name we have<BR>   </FONT>strcpy</bIG></FONT><FONT COLOR="Green"><BIG>(</bIG></FONT><FONT COLOR="Purple"><BIG>yylval.stval</bIG></FONT><FONT COLOR="Maroon"><BIG><FONT COLOR="Black">,</FONT></bIG></FONT><FONT COLOR="Purple"><BIG>yytext</bIG></FONT><FONT COLOR="Green"><BIG>);</bIG></FONT><FONT COLOR="Maroon"><BIG><FONT COLOR="Black"><BR>where stval is of type char array defined in the yystack (%union) .yytext<BR>is of type char* which contains the value of the read token.<BR>     </FONT></bIG></FONT><FONT COLOR="Blue"><BIG>Given Below is the source code for the lex file.</bIG></FONT><HR>
+                          <FONT COLOR="Purple"><BIG><BIG>crc.l</bIG></bIG></FONT>
+%{
+  #include "dstruct.h"
+  #include "y.tab.h"
+  #include &lt;string.h&gt;
+%}
+%s CL VAR METHOD 
+%%
+<FONT COLOR="Maroon">[ \t\n]*</FONT><FONT COLOR="Fuchsia"> </FONT> {}
+<FONT COLOR="Maroon">CLASS</FONT>       {BEGIN <FONT COLOR="Purple">CL</FONT>;
+             return <FONT COLOR="Purple">CLASS</FONT>; }
+<FONT COLOR="Maroon">CRC</FONT>         {
+
+             return <FONT COLOR="Purple">CRC</FONT>; }
+<FONT COLOR="Maroon">END</FONT>         {return <FONT COLOR="Purple">END</FONT>; }
+<FONT COLOR="Maroon">RESPONSIBILITY</FONT> {BEGIN METHOD;return <FONT COLOR="Purple">RESPONSIBILITY</FONT>; }
+<FONT COLOR="Maroon">COLABRATION</FONT>    {return <FONT COLOR="Purple">COLABRATION</FONT>; }
+<FONT COLOR="Maroon">INT </FONT>           {BEGIN VAR;return <FONT COLOR="Purple">INT</FONT>; }
+<FONT COLOR="Maroon">CHAR</FONT>           {BEGIN VAR;return <FONT COLOR="Purple">CHAR</FONT>; }
+<FONT COLOR="Maroon">"*"</FONT>            {return <FONT COLOR="Purple">PTR</FONT>; }
+<FONT COLOR="Maroon">USING</FONT>          {return <FONT COLOR="Purple">USING</FONT>; }
+<FONT COLOR="Maroon">HAS_A</FONT>          {return <FONT COLOR="Purple">HAS_A</FONT>; }
+<FONT COLOR="Maroon">KIND_OF</FONT>        {return <FONT COLOR="Purple">KIND_OF</FONT>; }
+<FONT COLOR="Maroon">&lt;CL&gt;[a-zA-Z][a-zA-Z0-9]*</FONT>  {BEGIN INITIAL;
+                strcpy(yylval.stval,yytext);
+                return <FONT COLOR="Purple">CLASSNAME</FONT>; }
+<FONT COLOR="Maroon">&lt;VAR&gt;[a-zA-Z][a-zA-Z0-9]*</FONT> {BEGIN INITIAL; 
+                           strcpy(yylval.stval,yytext);
+                           return <FONT COLOR="Purple">VARIABLE</FONT>; }
+<FONT COLOR="Maroon">&lt;METHOD&gt;[a-zA-Z][a-zA-Z0-9]*</FONT> {BEGIN INITIAL;
+                   strcpy(yylval.stval,yytext);
+                   return <FONT COLOR="Purple">METHODNAME</FONT>; } 
+<FONT COLOR="Maroon">[a-zA-Z][a-zA-Z0-9]* </FONT> { return <FONT COLOR="Purple">STRING</FONT>; }
+%%
+int yywrap(void)
+{return 1;
+}
+<HR>
+
+<H2 ALIGN=Center>  <FONT COLOR="Navy">Writting the Yacc</FONT>
+</H2>
+<FONT COLOR="Maroon"><BIG> Step 1. Identify the Terminal and Non-Terminal Symbols from the BNF<BR>         and Lex.<BR> Step 2. Try coding all the grammar rules in yacc with empty actions<BR>         Compile,link it to Lex and check for conflicts. This is an<BR>         easy way of validating the BNF for reduce/reduce and <BR>         shift/reduce conflicts.<BR> Step 3. Search for any reduce/reduce conflict. Resolve it in Lex.<BR> Step 4. Resolve any shift/reduce conflicts. Details on resolving it <BR>         given later.<BR> Step 5. Write rules for all possible syntax errors.Details on error<BR>         handling are given later.<BR> Step 6. Code the yyerror function in subroutine section.<BR> Step 6. Design the Data Structure which can be easily integrated<BR>         with the grammar rules for syntax directed translation.<BR> Step 7. From the Data Structures and Lex needs ,formulate the <BR>         correct Stack.The stack must have pointers for all the data<BR>         structures.<BR> Step 8. Do the appropiate type binding to all tokens and yacc variables<BR>         (non-terminals).<BR> Step 9. Write all the data structures in a seperate file and inlude it<BR>         in yacc.<BR> Step 10.Code all the actions.<BR> Step 11.Restrict the actions in case of error, i.e no data structure<BR>         should be built but parsing should continue to get more errors.</bIG></FONT>
+<FONT COLOR="Maroon"> </FONT>
+<FONT COLOR="Purple"><BIG>Eliminating shift/reduce errors<BR>      1. use -d switch of yacc to create debug file(y.output). This<BR>         file will contain the full transition diagram description<BR>         and the points at which any conflict arises.<BR>      2. Try assigning precedence and associativity to tokens and<BR>         literals by using %left %right %noassoc %prec. Note that<BR>         precedence level in the same line is same and down the line<BR>         increases.<BR>      3. In majority of the cases shift/reduce conflict is always in <BR>         the vicinity of left/right recursions. These might not be due<BR>         to associativity or precedence relations.e.g consider the rules<BR>              </bIG></FONT><FONT COLOR="Navy"><BIG>s-&gt;XabY</bIG></FONT><FONT COLOR="Purple"><BIG><BR>              </bIG></FONT><FONT COLOR="Navy"><BIG>a-&gt;E|aXAY</bIG></FONT><FONT COLOR="Purple"><BIG>   E=empty transition<BR>              </bIG></FONT><FONT COLOR="Navy"><BIG>b-&gt;E|bXBY</bIG></FONT><FONT COLOR="Purple"><BIG><BR>         The syntax of these rules says that there is block XY which can<BR>         have zero or more blocks of type A &amp; B. These rules have <BR>         shift/reduce conflict on the symbol X since in s-&gt;AabY for<BR>         making a transition from literal a to b with input X it has<BR>         no way to tell if it should reduce or shift another token .<BR>         These rules can be rewritten as following<BR>              </bIG></FONT><FONT COLOR="Navy"><BIG>s-&gt;XaY<BR>              a-&gt;E|aXbY<BR>              b-&gt;A|B</bIG></FONT><FONT COLOR="Purple"><BIG><BR> </bIG></FONT><FONT COLOR="Maroon"><BIG>Syntax checking and error recovery.It is one of the toughest part of<BR> parsing. There are many functions like yyerrok etc. However not all<BR> Yacc versions supports them. The simplest method is just to use the<BR> pseudo literal 'error'. In a rule whenever there is an error, yacc pushes<BR> a pseudo literal error and takes in next input. On identifying the rule<BR> it pops the stack and takes proper actions. Thus in this way the file<BR> pointer will always point to the right location and next rule can be<BR> looked for correctly. In our example code </bIG></FONT><BR> error class {yyerror("Missing Relation"); }<FONT COLOR="Maroon"><BIG> </bIG></FONT><FONT COLOR="Purple"><BIG> <BR> </bIG></FONT><FONT COLOR="Maroon"><BIG>says that if only class exists then error must be flaged. The literal error<BR> is pushed on the stack if relation is missing and then class is pushed.<BR> On reduction it calls yyerror with msg string. </bIG></FONT><FONT COLOR="Purple"><BIG>         </bIG></FONT>
+<BIG></bIG>
+<H2 ALIGN=CENTER><FONT COLOR="navy">Debugging The YACC</FONT></H2>
+<P><FONT COLOR="Maroon"><BIG>n rules never reduced</bIG></FONT>
+<BIG><FONT COLOR="black"> &nbsp;&nbsp;This means that the L.H.S or the yacc variable/non-termianl
+does not appear in any of the rules R.H.S.</FONT><FONT COLOR="purple"> This rule might be redundant
+or is not used. Either remove it or check where it should be invoked from.</FONT><BR>
+<FONT COLOR="Maroon">Illegal use of $n</FONT>
+<FONT COLOR="black"> &nbsp;&nbsp;The Yacc takes anything that is between {} as 
+actions except pseudo-variable $n's. Thus if } is missing then
+yacc will take the next rule as an action till it encounters $n. At 
+that point it will give the above error.</FONT><FONT COLOR="purple">Check for the missing }.
+</FONT><BR>
+<FONT COLOR="Maroon">default action causes potential type clash.</FONT>
+<FONT COLOR="black">   In case of pseudo variables assignments $$=$1; if the 'C'
+type defined for $$ is different from $1, or in a rule types are
+defiend for the non-terminals but the actions does not have an
+assignment then this error is generated.</FONT><FONT COLOR="purple">
+ Check for all $n value's types and the types of L.H.S of the rule.<BR></FONT>
+<FONT COLOR="Maroon">must specify type for X</FONT>
+<FONT COLOR="black"> This means that $X does not have a token type specified.
+i.e the token corresponding to $X does not have a type.</FONT><FONT COLOR="purple">
+define the type of X  %token &lt stack &gt X. </FONT></bIG>
+
+</P>
+<FONT COLOR="Navy"><BIG>Given below is the source code for the Yacc file</bIG></FONT>
+<HR>
+                           <FONT COLOR="Maroon"><BIG><BIG>crc.y</bIG></bIG></FONT>
+%{
+  #include "dstruct.h"
+  #ifndef debug
+  #define debug 0
+  #endif
+  extern int  yylineno;
+  extern char* yytext[];
+  extern FILE* outFile_p;
+  int noerror=1;
+%}
+%union{
+ char stval[100];
+ char* ptr;
+ COLABR *colbr;
+ ATTR *attr;
+ RESPONS *resp;
+ CARD *card;
+ }
+%token CLASS  CRC END 
+%token &lt;stval&gt; CLASSNAME
+%token RESPONSIBILITY
+%token COLABRATION STRING
+%token INT CHAR PTR
+%token &lt;stval&gt; VARIABLE 
+%token &lt;stval&gt; METHODNAME
+%token USING HAS_A KIND_OF
+%type &lt;ptr&gt; className
+%type &lt;ptr&gt; class
+%type &lt;ptr&gt; methodName
+%type &lt;colbr&gt; colabrationType colabration colabrations
+</PRE>
+<PRE>%type &lt;attr&gt; attributes attribute
+%type &lt;resp&gt; responsibility responsibilities
+%type &lt;card&gt; crc cards
+%start data
+%%
+data:cards  { 
+              if(noerror)
+                generatePseudoCode($1,outFile_p);
+              if(debug)
+                displayDataStruct($1);
+              printf("Complete\n");
+            }
+cards:crc {
+            if(noerror)
+             { $$=$1;
+               if(debug) 
+                printf("Assigned Ist Card\n");
+             }
+          }
+     |cards crc {
+                 if(noerror)
+                  {
+                   int no=2; 
+                   CARD *temp=$$;
+                   while(temp-&gt;next)
+                    { temp=temp-&gt;next;
+                      no++;
+                    }
+                   temp-&gt;next=$2;
+                   if(debug) 
+                    printf("Assigned %dth Card\n",no);
+                  }
+                }
+     |error {
+             yyerror("error in input file");
+            }
+crc:CRC class responsibilities colabrations END  {
+          if(noerror)
+           {
+            CARD* crc=getNewCard();
+            crc-&gt;className=$2;
+            crc-&gt;responsibility=$3;
+            crc-&gt;colabration=$4;
+            $$=crc;
+           }
+          }
+class:CLASS className {
+                       if(noerror)
+                        {
+                         $$=$2;
+                         if(debug) 
+                          printf("Assigned class name:%s\n",$2);
+                        }
+                      }
+     |CLASS error  { 
+                     yyerror("Class Name not specified"); 
+                   }
+className:CLASSNAME  {
+                      if(noerror)
+                       {
+                        char *name=(char*)malloc(strlen($1)*sizeof(char));
+                        strcpy(name,$1);
+                        $$=name;
+                       }
+                     }
+responsibilities:responsibility  {
+                if(noerror)
+                 {
+                  $$=$1;
+                  if(debug) 
+                   printf("Assigned Ist Responsibility:%s\n",$1-&gt;methodName);
+                 }
+                }
+                |responsibilities responsibility {
+                   if(noerror)
+                    {
+                      int no=2;
+                      RESPONS *temp=$$;
+                      while(temp-&gt;next)
+                        {temp=temp-&gt;next;
+                          no++;
+                        }
+                      temp-&gt;next=$2;
+                      if(debug)  
+                       printf("Assigned %dth Responsibility:%s\n",no,$2-&gt;methodName);
+                    }
+                  }
+                |error {
+                        yyerror("error in responsibility");
+                       }
+responsibility: RESPONSIBILITY methodName attributes END
+      {
+</PRE>
+<PRE>                  if(noerror)
+                   {
+                     RESPONS *res=getNewResp();
+                     res-&gt;methodName=$2;
+                     res-&gt;attribute=$3;
+                     $$=res;
+                   }
+                 }
+              | RESPONSIBILITY error attributes END  { 
+                                         yyerror("Method name not specified"); 
+                                        }
+methodName: METHODNAME {
+                        if(noerror)
+                        {
+                         char *name=(char*)malloc(strlen($1)*sizeof(char));
+                         strcpy(name,$1);
+                         $$=name; 
+                        }
+                       }
+attributes: { 
+              $$=NULL;
+</PRE>
+<PRE>            }
+          |attributes attribute {
+                                 if(noerror)
+                                  {
+                                   if($$)
+                                    {
+                                     int no=2;
+                                     ATTR *temp=$$;
+                                     while(temp-&gt;next)
+                                      {temp=temp-&gt;next;
+                                       no++;
+                                      }
+                                     temp-&gt;next=$2;
+                                     if(debug) 
+                                      printf("Assigned %dth Attribute:%s\n",no,
+</PRE>
+<PRE>                                                                   $2-&gt;attribute);
+</PRE>
+<PRE>                                    }
+                                   else
+                                   {
+                                    $$=$2;
+                                    if(debug) 
+                                     printf("Assigned Ist Attribute:%s\n",
+</PRE>
+<PRE>                                                             $2-&gt;attribute); 
+</PRE>
+<PRE>                                   }
+                                 }
+                               }
+attribute :INT VARIABLE {
+                         if(noerror)
+                          {
+                           ATTR* attr=getNewAttr();
+                           strcpy(attr-&gt;attribute,"int ");
+</PRE>
+<PRE>                           strcat(attr-&gt;attribute,$2);
+                           $$=attr;
+</PRE>
+<PRE>                          }
+                        }
+          |CHAR VARIABLE {
+                          if(noerror)
+                           {
+                            ATTR* attr=getNewAttr();
+                            strcpy(attr-&gt;attribute,"char ");
+                            $$=attr;
+                            strcat(attr-&gt;attribute,$2);
+</PRE>
+<PRE>                           }
+                          }
+          |INT PTR VARIABLE {
+                             if(noerror)
+                              {
+                               ATTR* attr=getNewAttr();
+                               strcpy(attr-&gt;attribute,"int *");
+                               strcat(attr-&gt;attribute,$3);
+</PRE>
+<PRE>                               $$=attr;
+</PRE>
+<PRE>                              }
+                            }
+          |CHAR PTR VARIABLE {
+
+                              if(noerror)
+                               {
+                                ATTR* attr=getNewAttr();
+                                strcpy(attr-&gt;attribute,"char *"); 
+                                strcat(attr-&gt;attribute,$3);
+</PRE>
+<PRE>                                $$=attr;
+</PRE>
+<PRE>                               }
+                             }
+          | error STRING {yyerror("Missing Type for Variable"); }
+          | error PTR STRING
+{ yyerror("Missing Type for Variable"); }
+</PRE>
+<PRE>          | INT error { yyerror("Missing Variable"); }
+          | CHAR error { yyerror("Missing Variable"); }
+          | INT PTR error { yyerror("Missing Variable"); }
+          | CHAR PTR error { yyerror("Missing Variable"); }
+</PRE>
+<PRE>colabrations: {
+                if(noerror)
+                  $$=NULL; 
+
+              }
+            |colabrations colabration {
+                 if(noerror)
+                  {
+                   if($$)
+                    {
+                      int no=2;
+                      COLABR *temp=$$;
+                      while(temp-&gt;next)
+                        { temp=temp-&gt;next;
+                          no++;
+                        }
+                      temp-&gt;next=$2;
+                      if(debug) 
+                       printf("Assigned %dth Colabration\n",no);
+</PRE>
+<PRE>                    }
+                   else
+                     {
+                      $$=$2;
+                      if(debug) 
+                        printf("Assigned Ist Colabration\n");
+</PRE>
+<PRE>                     }
+                  }
+                 }
+colabration:COLABRATION colabrationType END {
+                               if(noerror)
+                                  $$=$2 ; 
+                             }
+           |COLABRATION error END {
+                     yyerror("Colabration defined but is empty");
+</PRE>
+<PRE>                    }
+colabrationType:USING class {
+                             if(noerror)
+                              {
+                               COLABR* col=getNewColbr();
+                               col-&gt;relation=USING_R;
+                               col-&gt;className=$2;
+                               $$=col;
+                              }
+                            }
+               |HAS_A class {
+                             if(noerror)
+                              {
+                               COLABR* col=getNewColbr();
+                               col-&gt;relation=HAS_A_R;
+                               col-&gt;className=$2;
+                               $$=col;
+                              }
+                            }
+               |KIND_OF class {
+                               if(noerror)
+                                {
+                                 COLABR* col=getNewColbr();
+                                 col-&gt;relation=KIND_OF_R;
+</PRE>
+<PRE>                                 col-&gt;className=$2;
+                                 $$=col;
+</PRE>
+<PRE>                                }
+                              }
+               |error class {yyerror("Missing Relation"); }
+               |USING error {yyerror("Missing Class"); }
+               |HAS_A error {yyerror("Missing Class"); }
+               |KIND_OF error {yyerror("Missing Class"); }
+%%
+#include&lt;stdio.h&gt;
+#include &lt;iostream.h&gt;
+#include &lt;string.h&gt;
+extern void yyerror(char* msg)
+{
+ noerror=0;
+ if(strcmp(msg,"syntax error"))
+  printf(" Syntax Error in Line : %d : %s\n",yylineno,msg);
+}
+<HR>
+<H2 ALIGN=Center>  <FONT COLOR="Navy">Data Structures Header File</FONT>
+</H2>
+<HR>
+                                  <FONT COLOR="Maroon"><BIG><BIG>dstruct.h</bIG></bIG></FONT>
+#ifndef DSTRUCT_H
+#define DSTRUCT_H
+
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;malloc.h&gt;
+enum RELATION {NONE, USING_R,HAS_A_R, KIND_OF_R };
+enum BOOL {FALSE,TRUE };
+
+typedef struct COLABR {
+                 char* className;
+                 RELATION relation;
+                 COLABR *next;
+               }COLABR ;
+
+typedef struct  ATTR {
+               char *attribute;
+               ATTR *next;
+             } ATTR;
+
+typedef struct RESPONS{
+               char *methodName;
+               ATTR *attribute;
+               RESPONS *next;
+               }RESPONS;
+
+typedef struct CARD {
+               char *className;
+               RESPONS *responsibility;
+               COLABR  *colabration;
+               CARD *next;
+               } CARD;
+
+COLABR *getNewColbr();
+RESPONS *getNewResp();
+CARD *getNewCard();
+ATTR *getNewAttr();
+void generatePseudoCode(CARD *cardList,FILE* fp);
+void displayDataStruct(CARD *cardList);
+#endif
+<HR>
+<HR>
+                                 <FONT COLOR="Maroon"><BIG><BIG>dstruct.c</bIG></bIG></FONT>
+#include "dstruct.h"
+
+COLABR *getNewColbr()
+{
+  COLABR *col=(COLABR*)malloc(sizeof(COLABR));
+  col-&gt;relation=NONE;
+  col-&gt;next=NULL;
+  return col;
+}
+
+ATTR *getNewAttr()
+{
+  ATTR* attr=(ATTR*)malloc(sizeof(ATTR));
+  attr-&gt;attribute=(char*)malloc(50*sizeof(char));
+  strcpy(attr-&gt;attribute,"");
+  attr-&gt;next=NULL;
+  return attr;
+}
+
+RESPONS *getNewResp()
+{
+  RESPONS *res=(RESPONS*)malloc(sizeof(RESPONS));
+  res-&gt;attribute=NULL;
+  res-&gt;next=NULL;
+  return res;
+}
+
+CARD *getNewCard()
+{
+  CARD *crc=(CARD*)malloc(sizeof(CARD));
+  crc-&gt;responsibility=NULL;
+  crc-&gt;colabration=NULL;
+  crc-&gt;next=NULL;
+  return crc;
+}
+
+void displayDataStruct(CARD *cardList)
+{
+ /* Display DS for Debugging */
+ while(cardList)
+ {
+   printf(" CLASS %s\n",cardList-&gt;className);
+   RESPONS *tempResp=cardList-&gt;responsibility;
+   while(tempResp)
+   {
+   printf(" RESPONSIBILITY\n");
+    printf(" Method %s\n",tempResp-&gt;methodName);
+    printf(" Attributes\n");
+    ATTR *tempAttr=tempResp-&gt;attribute;
+    while(tempAttr)
+     {printf("   %s\n",tempAttr-&gt;attribute);
+      tempAttr=tempAttr-&gt;next;
+     }
+    tempResp=tempResp-&gt;next;
+  }
+  COLABR *tempColbr=cardList-&gt;colabration;
+  if(tempColbr)
+    printf("  COLABRATORS\n");
+  while(tempColbr)
+    {
+     switch(tempColbr-&gt;relation)
+      {
+         case NONE: printf("This Class has no relation specified with ");
+</PRE>
+<PRE>                    break;
+         case USING_R: printf("This Class USES class ");
+                    break;
+         case HAS_A_R:printf("This Class HAS A class ");
+                    break;
+         case KIND_OF_R: printf("This Class is a KIND OF class ");
+</PRE>
+<PRE>                    break;
+         default: break;
+</PRE>
+<PRE>       }
+     printf(" %s\n",tempColbr-&gt;className);
+     tempColbr=tempColbr-&gt;next;
+    }
+   cardList=cardList-&gt;next;
+ }
+}
+
+void generatePseudoCode(CARD *cardList,FILE *outFile_p)
+{
+ while(cardList)
+ {
+   fprintf(outFile_p,"// Class Name: %s\n",cardList-&gt;className);
+</PRE>
+<PRE>   RESPONS *tempResp=cardList-&gt;responsibility;
+
+   while(tempResp)
+
+   {
+    fprintf(outFile_p,"// Functions:\n");
+    fprintf(outFile_p,"//   %s",tempResp-&gt;methodName);
+    ATTR *tempAttr=tempResp-&gt;attribute;
+    while(tempAttr)
+     {
+      fprintf(outFile_p," %s",tempAttr-&gt;attribute);
+      tempAttr=tempAttr-&gt;next;
+     }
+     fprintf(outFile_p,"\n");
+    tempResp=tempResp-&gt;next;
+  }
+  COLABR *tempColbr=cardList-&gt;colabration;
+  fprintf(outFile_p,"// Class Relations :\n");
+  while(tempColbr)
+    {
+     switch(tempColbr-&gt;relation)
+      {
+         case NONE: fprintf(outFile_p,"// This Class has no relation specified\n ");
+</PRE>
+<PRE>                    break;
+         case USING_R: fprintf(outFile_p,"// This Class USES class %s\n
+                                                 ",tempColbr-&gt;className);
+</PRE>
+<PRE>                    break;
+         case HAS_A_R:fprintf(outFile_p,"// This Class HAS A class
+                                        %s\n",tempColbr-&gt;className);
+                      break;
+         case KIND_OF_R: fprintf(outFile_p,"// This Class is a KIND OF class
+                                                  %s\n",tempColbr-&gt;className);
+</PRE>
+<PRE>                          break;
+         default: break;
+</PRE>
+<PRE>       }
+     tempColbr=tempColbr-&gt;next;
+    }
+
+   fprintf(outFile_p,"//\n");
+   fprintf(outFile_p,"Class %s { \n",cardList-&gt;className);
+</PRE>
+<PRE>   fprintf(outFile_p,"    Public:\n");
+   tempResp=cardList-&gt;responsibility;
+
+   while(tempResp)
+    {
+      fprintf(outFile_p,"      %s(",tempResp-&gt;methodName);
+      ATTR *tempAttr=tempResp-&gt;attribute;
+      while(tempAttr)
+       {
+        if(tempAttr-&gt;next)
+         fprintf(outFile_p,"%s,",tempAttr-&gt;attribute);
+        else
+         fprintf(outFile_p,"%s",tempAttr-&gt;attribute);
+        tempAttr=tempAttr-&gt;next;
+       }
+      fprintf(outFile_p,");\n");
+    tempResp=tempResp-&gt;next;
+    }
+    fprintf(outFile_p,"    Protected:\n");
+    fprintf(outFile_p,"    Private:\n");
+    fprintf(outFile_p,"};\n");
+
+   cardList=cardList-&gt;next;
+ }
+ 
+}
+<HR>
+                                   <FONT COLOR="Purple"><BIG><BIG>main.c</bIG></bIG></FONT>
+#include &lt;iostream.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+extern int  yyparse();
+extern FILE *yyin;
+FILE *outFile_p;
+main(int argc,char *argv[])
+{
+ if(argc&lt;3)
+  {
+   printf("Please specify the input file &amp; output file\n");
+   exit(0);
+  }
+ FILE *fp=fopen(argv[1],"r");
+ if(!fp)
+ {
+  printf("couldn't open file for reading\n");
+  exit(0);
+ }
+  outFile_p=fopen(argv[2],"w");
+  if(!outFile_p)
+  {
+   printf("couldn't open temp for writting\n");
+   exit(0);
+  }
+  yyin=fp;
+  yyparse();
+ fclose(fp);
+ fclose(outFile_p);
+}
+<HR>
+<H2 ALIGN=Center>  <FONT COLOR="Navy">The Makefile</FONT>
+</H2><BIG>The Above code was compiled on Sun-sparc using C++ compiler. If one wants<BR>to use C compiler then many changes will have to be done in the code.</bIG>
+<HR>
+                               <FONT COLOR="Purple"><BIG><BIG>makefile</bIG></bIG></FONT>
+<BIG><BIG></bIG></bIG>
+C++=/sun/pollux/home1/home/lang/CC-4.0.1 -Dsun4  -g
+crc: main.o crcy.o crcl.o dstruct.o
+        $(C++) -DEXTERNC -I/. crcl.o  crcy.o dstruct.o main.o  -o crc
+crcl.o: ../lex/crc.l
+        /usr/lang/lex++ ../lex/crc.l
+        mv lex.yy.c crcl.cxx
+        $(C++). -c crcl.cxx -o crcl.o
+crcy.o: crc.y
+        /usr/lang/yacc++ -dvt crc.y
+        mv y.tab.c crcy.cxx
+        $(C++) -c crcy.cxx -o crcy.o
+main.o: main.cxx
+        $(C++) -c main.cxx -o main.o
+dstruct.o:dstruct.c
+        $(C++) -c dstruct.c -o dstruct.o
+<HR>
+
+
+</PRE>
+</body></HTML>
+

@@ -1,0 +1,473 @@
+Yacc program to recognize a valid arithmetic expression for operators (+,-,*, / ).  
+
+%{       #include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+%}
+%token       num  let
+%left   '+'   '-'                                              
+%left    '*'   '/'                                              
+%%
+Stmt :           Stmt   ‘\n’           {   printf (“\n.. Valid Expression.. \n”);   exit(0);  }
+   |     expr
+   |
+   |     error    ‘\n’         {    printf (“\n..Invalid ..\n”);     exit(0); }
+   ;
+expr :           num
+               |     let
+   |     expr  ’ + ’   expr
+               |     expr   ’ - ’   expr
+               |     expr   ’ * ’   expr
+               |     expr   ’ / ’   expr
+               |     '('     expr    ')'                     
+               ;
+%%
+main ( )
+{
+printf (“Enter an expression to validate : ”);
+yyparse ( );
+}
+
+yylex()                                            
+{                                                 
+        int ch;                                   
+        while ( ( ch = getchar() ) == '  ' );               
+        if ( isdigit(ch) )                            
+           return  num;                           // return token num          
+        if ( isalpha(ch) )                           
+                       return  let;                   // return token let
+        return ch;        
+}
+           
+yyerror (char *s)
+{
+    printf ( “%s”, s );
+}
+
+
+COMPILATION
+OUTPUT FILE PRODUCED
+$  yacc   -d  prog.y
+ y.tab.c ,  y.tab.h
+$ cc   y.tab.c   -ll
+a.out    (PARSER)
+./a.out
+Running parser
+
+    Input
+ OUTPUT
+ 4 + t
+Accepted
+( 5 * d + 5 )
+Accepted
+ a + * 5
+Rejected
+
+Y5.y
+Yacc program to Evaluate an arithmetic expression for operators (+,-,*, / ).  
+
+%{   /* Evaluate simple arithmetic expression */             
+        #include <stdio.h>                                  
+        #include <ctype.h>                                   
+        #include <stdlib.h>                                 
+        #define  YYSTYPE  double                             
+%}                                                         
+%token  num                                                 
+%left   '+'   '-'                                              
+%left    '*'   '/'                                              
+%%                                                         
+Stmt    :        Stmt   '\n'        {  printf ( "Value is %f \n", $1);  exit(0); }    
+               |     Expr                                           
+               |                                                  
+               |     error   '\n'          {   printf ("INVALID");  exit(0);  }               
+             ;                                                   
+Expr    :           num                            {   $$ = $1;  }                                         
+               |     Expr    '+'   Expr           {   $$ = $1 + $3;  }                         
+               |     Expr    '-'    Expr           {   $$ = $1 - $3;   }                         
+               |     Expr    '*'    Expr           {   $$ = $1 * $3;  }                         
+               |     Expr    '/'    Expr            {                                   
+                                                                        if ( $3 == 0 )                          
+{   printf ( "division by zero \n");  
+     exit (0);
+}
+else                                             
+$$ = $1 / $3;                               
+}                                               
+               |     '('    Expr    ')'                {  $$  =  $2;  }                                        
+            ;                                                                
+%% 
+                                                                    
+main ( )                                                                  
+{                                                                        
+        printf ( "ENTER AN EXPRESSION TO EVALUATE : \n" );                  
+        yyparse ( );                                                      
+}
+                                                                       
+yyerror (char *s)                  
+{                                 
+        printf ( "%s", s );           
+}                                 
+
+yylex ( )                                                                 
+{                                                                        
+        char ch;                                                         
+        while ( (ch = getchar() ) == '  ' ) ;
+        if ( isdigit(ch) | ch == '.' )                                         
+        {                                                                
+                ungetc ( ch, stdin );                                       
+                scanf ( "%lf", &yylval );                                   
+                return  num;                                              
+        }                                                               
+        return ch;                
+}                 
+               
+
+COMPILATION
+OUTPUT FILE PRODUCED
+$  yacc   -d  Y5.y
+ y.tab.c ,  y.tab.h
+$ cc   y.tab.c   -ll
+a.out    (PARSER)
+./a.out
+Running parser
+
+
+    Input
+ OUTPUT
+4 + 8                                       
+Value is 12.000000                  
+3 * 9
+Value is 27.000000
+5-
+Syntax error
+
+  
+
+Y2.y
+Program to recognize nested IF control statements and display the number of levels of nesting.
+
+Yacc Program  (without curly braces ‘{‘ …‘}’  )
+
+%{    #include <stdio.h>                                       
+        int depth = 0, nesting = 0;                               
+%}                                                               
+%token           IF    ROP   ST   NUM   ENTER
+%%                                                              
+Strt      :   IF_STAT    ENTER            {  printf ( “\n Total Nested if = %d\n”, count); exit(0); }                         
+            ;                                                        
+IF_STAT:  IF   '('   COND   ')'   ENTER  STAT          { count++; }
+             ;                                      
+STAT :  ST  ‘;’
+               | IF_STAT
+             ;
+COND:  ST  ROP  ST                   
+            |  ST
+            ;
+%%                                                              
+main()                                                          
+{                                                               
+        printf ( “\n ENTER if statement : \n” );               
+        yyparse ();                                              
+}                                                               
+yyerror (char *s)                                                
+{                                                                
+        printf ( "\n  %s  \n", s ); 
+}                       
+
+
+
+
+Lex program  :   Y2.l
+
+%{                                    
+        #include "y.tab.h"            
+%}                                     
+%%                                    
+“if”                                         {  return   IF;     }
+[\(\)\{\}]                   {  return *yytext;   }
+[<>]                                         { return *yytext;   }
+“  “                                          { ; }
+.                                               {  return *yytext;   }
+%%                                    
+Yacc Program  (without curly braces ‘{‘ …‘}’  )
+
+%{    #include <stdio.h>                                       
+        int depth = 0, nesting = 0;                               
+%}                                                              
+%token           IF    ROP   ST   NUM   ENTER
+%%                                                              
+StartP :   IF_STAT    ENTER            {  printf ( “\n Total Nested if = %d\n”, count); exit(0); }                        
+            ;                                                         
+IF_STAT:  IF   '('   COND   ')'   ENTER  STAT          { count++; }
+             ;                                      
+STAT :       ‘{‘   ENTER  ST  ‘;’   ENTER    ‘}’
+   |   ‘{‘   ENTER  IF_STAT   ENTER    ‘}’
+   |   IF_STAT
+   |  ST
+             ;
+COND:  ST  ROP  ST                   
+            |  ST
+            ;
+%%     
+
+                                                        
+COMPILATION
+OUTPUT FILE PRODUCED
+$  yacc   -d  Y2.y
+ y.tab.c ,  y.tab.h
+$  lex   Y2.l
+
+$ cc   lex.yy.c y.tab.c   -ll
+a.out    (PARSER)
+./a.out
+Running parser
+
+
+    Input
+ OUTPUT
+If ( a > b )
+{
+      a + b ;
+}                                       
+
+Total NESTED IF = 1
+              
+
+
+
+  
+Y4.y
+/*     Yacc program to recognize a valid variable, which starts with a letter followed by any number of digits and letters.   */
+
+
+%{     #include <stdio.h>
+#include <ctype.h>
+%}
+%token    let     dig
+%%
+TERM :      XTERM     ‘\n’                         {   printf ( “\nAccepted\n” );   exit(0);  }
+       |   error                          {    yyerror ( “Rejected\n” );      }
+   ;
+XTERM :   XTERM  let
+                     |  XTERM dig   
+                      |   let
+              ;                                         
+%%
+yylex()
+{
+char  ch;
+while ( ( ch = getchar ( ) ) ==  ’  ’ )  ;
+if  ( isalpha (ch)  )
+return   let;
+if ( isdigit (ch) )
+return dig;
+      return ch;
+}
+
+main()
+{
+printf (“Enter a variable : ”);
+yyparse ();
+}
+
+yyerror(char *s)
+{
+printf (“%s”, s);
+}
+
+
+
+
+COMPILATION
+OUTPUT FILE PRODUCED
+$  yacc   -d  Y4.y
+ y.tab.c ,  y.tab.h
+$ cc   y.tab.c   -ll
+a.out    (PARSER)
+./a.out
+Running parser
+
+Input
+OUTPUT
+Enter a variable :  asd12
+Accepted
+Enter a variable :  12adr
+Rejected
+
+
+
+
+  
+Y6.y
+Yacc program to recognize strings ‘aaab’, ‘abbb’,’ab’ and ‘a’ using the grammar (anbn , n>0).  
+
+%{                                                                        
+        #include<stdio.h>                                                
+%}                                                                       
+%token   a      b
+%%                                                                        
+Stmt    : TERM   '\n'     {  printf ( "\n string belongs to grammar..\n" );  exit(0); }        
+            |  error   '\n'     {  yyerror ( "\n String does not belong to grammar..\n" ); }
+            ;
+TERM: a TERM b                                                           
+            |                                                                
+            ;
+%%                                                                       
+
+main ( )                                                                   
+{                                                                         
+        printf ( "ENTER String for GRAMMER a^nb^n : \n"  );                              
+        yyparse ( );                                                       
+}                       
+
+yylex ( )                                                                  
+{                                                                        
+        char ch;                                                         
+        while ( ( ch = getchar() ) == '  ' );
+        if ( ch == 'a' )                       
+                return a;                 
+        if ( ch == 'b' )                       
+                return b;                 
+        return ch;                        
+}               
+                         
+yyerror (char *s)                          
+{                                         
+        printf ( "%s", s);                   
+}                                         
+
+
+
+
+
+
+
+
+COMPILATION
+OUTPUT FILE PRODUCED
+$  yacc   -d  Y6.y
+ y.tab.c ,  y.tab.h
+$ cc   y.tab.c   -ll
+a.out    (PARSER)
+./a.out
+Running parser
+
+Input
+OUTPUT
+ENTER String :  aaabbb
+String belongs to grammar
+ENTER String:  aabbb
+Rejected
+
+
+
+
+ Y7.y
+Yacc program to recognize strings for grammar (anb, n>=10).  
+
+%{                                                                       
+            #include<stdio.h>        
+            int  n = 0 ;                                       
+%}                                                                        
+%token  A  B
+%%                                                                       
+Stmt    : TERM  B   '\n'            {   if ( n>=10 )  printf ( "\n String belongs to grammar.." );  
+                   else   printf ("\n Rejected .. ");
+              }        
+            |  error   '\n'         {  printf ( "\n ..Rejected..\n" ); }
+           ;
+TERM: TERM  A          {  n++ ; }
+            |
+            ;
+%%                                                                       
+
+main ( )                                                                    
+{                                                                        
+        printf ( "ENTER String for GRAMMER a^nb^n : \n"  );                              
+        yyparse ( );                                                        
+}                      
+                         
+yyerror (char *s)                          
+{                                         
+        printf ( " Syntax Error " );                   
+}                                          
+                       
+yylex ( )                                                                  
+{                                                                        
+        char ch;                                                          
+        while ( ( ch = getchar() ) == '  ' );
+        if ( ch == 'a' )                       
+                return A;                 
+        if ( ch == 'b' )                       
+                return B;                  
+        return ch;                        
+}               
+            
+
+
+
+
+
+
+COMPILATION
+OUTPUT FILE PRODUCED
+$  yacc   -d  Y7.y
+ y.tab.c ,  y.tab.h
+$ cc   y.tab.c   -ll
+a.out    (PARSER)
+./a.out
+Running parser
+
+Input
+OUTPUT
+ENTER String :  aaab
+Rejected
+ENTER String:  aaaaaaaaaaaab
+String belong to the grammar
+
+
+
+
+Lex program  :   Y2.l
+ 
+%{                                     
+        #include "y.tab.h"             
+%}  
+                                   
+%%                                     
+“if”“(”.*“)”         {  return   IF;     }
+“else”              {  return   ELSE;   }
+.*                   {  return SIMPLE;   } 
+“{”.*“}”            {  return SIMPLE;   } 
+ “  “               { ; }
+%%
+                                     
+
+Yacc program  :   Y2.l
+ 
+%{ 
+       #include <stdio.h> 
+%} 
+ 
+%token SIMPLE IF ELSE 
+ 
+%nonassoc REDUCE 
+%nonassoc ELSE 
+ 
+%%
+Strt   : stmnt '\n'               {printf(“\n..Valid..\n”);}
+              ; 
+stmnt  : SIMPLE 
+       | if_stmnt 
+       ; 
+if_stmnt : IF stmnt %prec REDUCE         { printf("simple if");} 
+        | IF stmnt ELSE stmnt     { printf("if_then_else");} 
+        ; 
+%%
+
+main ()
+{
+       yyin = fopen(“iffile.c”, “r”);
+       yyparse();
+}
+ 

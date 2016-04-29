@@ -1,0 +1,81 @@
+/*****************************************************/
+* Problem Statement :- 
+ Assignment To implement a parser to convert infix 
+ to postfix expression & write the output to a file 
+ named "postfix.txt".
+* Roll No :- 40 Batch :- A2
+* BE(Computer)
+* Date :- 15/09/2011
+********************** inpost.l ***********************
+%{
+#include<stdio.h>
+#include<math.h>
+#include "y.tab.h"
+%}
+%%
+[0-9]+ {
+ yylval.dval=yytext[0];
+ return NUMBER;
+ }
+[t];
+n return 0;
+. {return yytext[0];}
+%%
+void yyerror(char *str)
+{
+ printf("n Invalid Character...");
+}
+int main()
+{
+ printf("Enter Expression => ");
+ yyparse();
+ return(0);
+}
+********************** inpost.y ***********************
+%{
+#include<stdio.h>
+int yylex(void);
+int k=0;
+int i;
+char sym[26];
+FILE *fp;
+%}
+%union
+{
+ char dval;
+}
+%token <dval> NUMBER
+%left '+' '-'
+%left '*' '/'
+%nonassoc UMINUS
+%type <dval> state
+%type <dval> exp
+%%
+state : exp {
+ printf("nConverted Postfix expression is => ");
+ fp=fopen("postfix.txt","w
+ for(i=0;i<k;i++)
+ {
+ fprintf(fp,"%c",sym[i]);
+ printf("%c",sym[i]);
+ }
+ fclose(fp);
+ }
+ ;
+exp : NUMBER {$$=$1;sym[k]=(char)$$;k++}
+ | exp '+' exp {sym[k]='+';k++}
+ | exp '-' exp {sym[k]='-';k++}
+ | exp '*' exp {sym[k]='*';k++}
+ | exp '/' exp {sym[k]='/';k++}
+ ;
+%%
+********************** Output ***********************
+[a40@localhost ~]$ lex inpost.l
+[a40@localhost ~]$ yacc -d inpost.y
+[a40@localhost ~]$ cc lex.yy.c y.tab.c -ll
+[a40@localhost ~]$ ./a.out
+
+Enter Expression => 7*9+6/2-1
+Converted Postfix expression is => 79*62/+1-
+**************** Output postfix.txt*******************
+79*62/+1-
