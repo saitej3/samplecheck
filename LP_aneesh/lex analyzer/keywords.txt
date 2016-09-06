@@ -1,8 +1,0 @@
-if
-else
-for
-while
-int
-float
-long
-char

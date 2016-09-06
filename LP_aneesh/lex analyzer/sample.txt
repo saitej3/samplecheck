@@ -1,8 +1,0 @@
-int a ;
-char b ;
-
-int main()
-{
-int c ;
-int d = a + b ;
-}
